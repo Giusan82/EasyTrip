@@ -1,0 +1,72 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/widget_container"
+    android:background="@drawable/corners_rounded"
+    android:padding="@dimen/widget_margin">
+
+    <TextView
+        android:id="@+id/tv_widget_weather_state"
+        tools:text="Sunny"
+        android:text="@string/no_data_available"
+        android:textSize="@dimen/text_h5"
+        android:layout_marginStart="@dimen/activity_horizontal_margin_list"
+        android:layout_marginTop="@dimen/activity_vertical_margin_list"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/iv_widget_weather_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/tv_widget_temperature"
+        tools:text="24"
+        android:textStyle="bold"
+        android:textSize="@dimen/text_h2"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:layout_marginStart="@dimen/activity_horizontal_margin_list"
+        android:layout_alignParentStart="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_below="@+id/tv_widget_weather_state"/>
+
+    <TextView
+        android:id="@+id/tv_widget_unit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:layout_below="@+id/tv_widget_weather_state"
+        android:layout_toEndOf="@+id/tv_widget_temperature"
+        android:text="@string/temperature_unit"
+        android:visibility="gone"
+        android:textSize="@dimen/text_h3" />
+    <TextView
+        android:id="@+id/tv_widget_location"
+        android:textSize="@dimen/text_h5"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:layout_toStartOf="@+id/iv_widget_weather_icon"
+        android:layout_marginStart="@dimen/activity_horizontal_margin_list"
+        android:layout_marginBottom="@dimen/activity_vertical_margin_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/tv_widget_temperature"
+        android:visibility="gone"
+        tools:text="Rome, Italy"/>
+
+    <ImageView
+        android:id="@+id/iv_widget_weather_icon"
+        android:layout_marginTop="@dimen/activity_vertical_margin_list"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin_list"
+        android:layout_marginStart="@dimen/activity_horizontal_margin_list"
+        android:layout_marginBottom="@dimen/activity_vertical_margin_list"
+        android:layout_width="@dimen/icons_size_widget"
+        android:layout_height="@dimen/icons_size_widget"
+        android:layout_alignParentEnd="true"
+        android:visibility="gone"
+        tools:src="@drawable/a01d"/>
+
+</RelativeLayout>
