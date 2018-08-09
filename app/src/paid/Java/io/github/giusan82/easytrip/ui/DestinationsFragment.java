@@ -110,7 +110,6 @@ public class DestinationsFragment extends Fragment implements ListAdapter.ItemLi
         //this add the searchView to actionBar
         searchField = (SearchView) search.getActionView();
         //set the hint text on searchView
-        //searchField.setQueryHint(getString(R.string.searchHint));
         //this expand the searchView without click on it
         searchField.setIconified(false);
         searchField.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -241,12 +240,10 @@ public class DestinationsFragment extends Fragment implements ListAdapter.ItemLi
             if(mCursor.getCount() == 0){
                 catchingData(mQuery);
                 Timber.d("Downloading data");
-                return;
             }else{
                 mEmptyView.setVisibility(View.GONE);
             }
         adapter.swapCursor(mCursor);
-        //mList.smoothScrollToPosition(0);
         Timber.d("Number of Items: " + mCursor.getCount());
         Timber.d("Load finished");
     }

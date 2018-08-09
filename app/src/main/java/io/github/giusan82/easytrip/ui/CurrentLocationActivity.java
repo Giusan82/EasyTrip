@@ -77,6 +77,8 @@ import timber.log.Timber;
 public class CurrentLocationActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback, LoaderManager.LoaderCallbacks<Cursor> {
     private static final int DATA_LOADER_ID = 7;
+    private static final String BUNDLE_EXPANSION_KEY = "expansion_key";
+    private static final String BUNDLE_EMPTY_VIEW_KEY = "empty_view";
 
     // A default location (Sydney, Australia) and default zoom to use when location permission is
     // not granted.
@@ -95,11 +97,14 @@ public class CurrentLocationActivity extends AppCompatActivity implements Google
     private ArrayList<PlacesData.Results> mPlaces;
     private ApiRequest mApiRequest;
     private boolean isExpanded;
+    private boolean isEmpty;
     private boolean isFirst;
     private String mLatitude;
     private String mLongitude;
     private IntentFilter mIntentFilter;
     private Window mWindow;
+    private Slide mSlide;
+    private ConstraintSet mConstrainSet;
 
     @BindView(R.id.toolbar)
     Toolbar mToolBar;
@@ -176,45 +181,30 @@ public class CurrentLocationActivity extends AppCompatActivity implements Google
         }else{
             mPlaces = (ArrayList<PlacesData.Results>) Parcels.unwrap(savedInstanceState.getParcelable(PlacesData.BUNDLE_KEY_PLACES_LIST));
             mTabsAdapter.setChangingList(mPlaces);
+            isExpanded = savedInstanceState.getBoolean(BUNDLE_EXPANSION_KEY);
+            isEmpty = savedInstanceState.getBoolean(BUNDLE_EMPTY_VIEW_KEY);
         }
-        final Slide slide =  new Slide();
-        final ConstraintSet set = new ConstraintSet();
+        mSlide =  new Slide();
+        mConstrainSet = new ConstraintSet();
+        if (!isExpanded){
+            actionExpanding();
+        }else {
+            actionCollapsing();
+        }
+        if (isEmpty){
+            mEmptyView.setVisibility(View.VISIBLE);
+        }else{
+            mEmptyView.setVisibility(View.GONE);
+        }
         mExpander.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isExpanded){
-                    mExpander.setImageResource(R.drawable.ic_expand_less_24dp);
-                    mExpander.setContentDescription(getString(R.string.collapse_content));
-                    isExpanded = false;
-                    Timber.d("is Expanded? " +isExpanded);
-                    slide.setSlideEdge(Gravity.TOP);
-                    TransitionManager.beginDelayedTransition((ViewGroup) mMapView, slide);
-                    mMapView.setVisibility(View.VISIBLE);
-
-                    TransitionManager.beginDelayedTransition(mViewPager);
-
-                    // source: https://stackoverflow.com/a/45264822
-                    set.clone(mContent);
-                    set.clear(mViewPager.getId(), ConstraintSet.TOP);
-                    set.connect(mViewPager.getId(), ConstraintSet.TOP, mMapView.getId(), ConstraintSet.BOTTOM, 8);
-                    set.applyTo(mContent);
-
-
-                }else {
-                    mExpander.setImageResource(R.drawable.ic_expand_more_24dp);
-                    mExpander.setContentDescription(getString(R.string.expand_content));
+                if (!isExpanded){
+                    actionCollapsing();
                     isExpanded = true;
-                    Timber.d("is Expanded? " +isExpanded);
-                    slide.setSlideEdge(Gravity.TOP);
-                    TransitionManager.beginDelayedTransition((ViewGroup) mMapView, slide);
-                    mMapView.setVisibility(View.GONE);
-                    TransitionManager.beginDelayedTransition(mViewPager);
-                    set.clone(mContent);
-                    set.clear(mViewPager.getId(), ConstraintSet.TOP);
-                    set.connect(mViewPager.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 72);
-                    set.applyTo(mContent);
-
-
+                }else {
+                    actionExpanding();
+                    isExpanded = false;
                 }
             }
         });
@@ -225,6 +215,38 @@ public class CurrentLocationActivity extends AppCompatActivity implements Google
             getSupportLoaderManager().initLoader(DATA_LOADER_ID, null, this);
     }
 
+    private void actionExpanding(){
+        Timber.d("is Expanded? " +isExpanded);
+        mExpander.setImageResource(R.drawable.ic_expand_less_24dp);
+        mExpander.setContentDescription(getString(R.string.collapse_content));
+
+        mSlide.setSlideEdge(Gravity.TOP);
+        TransitionManager.beginDelayedTransition((ViewGroup) mMapView, mSlide);
+        mMapView.setVisibility(View.VISIBLE);
+
+        TransitionManager.beginDelayedTransition(mViewPager);
+
+        // source: https://stackoverflow.com/a/45264822
+        mConstrainSet.clone(mContent);
+        mConstrainSet.clear(mViewPager.getId(), ConstraintSet.TOP);
+        mConstrainSet.connect(mViewPager.getId(), ConstraintSet.TOP, mMapView.getId(), ConstraintSet.BOTTOM, 8);
+        mConstrainSet.applyTo(mContent);
+    }
+
+    private void actionCollapsing(){
+        Timber.d("is Expanded? " +isExpanded);
+        mExpander.setImageResource(R.drawable.ic_expand_more_24dp);
+        mExpander.setContentDescription(getString(R.string.expand_content));
+
+        mSlide.setSlideEdge(Gravity.TOP);
+        TransitionManager.beginDelayedTransition((ViewGroup) mMapView, mSlide);
+        mMapView.setVisibility(View.GONE);
+        TransitionManager.beginDelayedTransition(mViewPager);
+        mConstrainSet.clone(mContent);
+        mConstrainSet.clear(mViewPager.getId(), ConstraintSet.TOP);
+        mConstrainSet.connect(mViewPager.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 72);
+        mConstrainSet.applyTo(mContent);
+    }
     @Override
     protected void onStart() {
         super.onStart();
@@ -411,8 +433,10 @@ public class CurrentLocationActivity extends AppCompatActivity implements Google
                 }
                 if (mPlaces.size() == 0){
                     mEmptyView.setVisibility(View.VISIBLE);
+                    isEmpty = true;
                 }else {
                     mEmptyView.setVisibility(View.GONE);
+                    isEmpty = false;
                 }
                 mTabsAdapter.setChangingList(mPlaces);
                 //refresh();
@@ -460,12 +484,16 @@ public class CurrentLocationActivity extends AppCompatActivity implements Google
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putParcelable(PlacesData.BUNDLE_KEY_PLACES_LIST, Parcels.wrap(mPlaces));
+        outState.putBoolean(BUNDLE_EXPANSION_KEY, isExpanded);
+        outState.putBoolean(BUNDLE_EMPTY_VIEW_KEY, isEmpty);
+        Timber.d("Saving state " + isExpanded);
         super.onSaveInstanceState(outState);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
+        Timber.d("Restoring state " + isExpanded);
     }
 
     @NonNull

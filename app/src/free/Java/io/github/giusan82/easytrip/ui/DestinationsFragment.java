@@ -1,6 +1,5 @@
 package io.github.giusan82.easytrip.ui;
 
-import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -28,7 +27,6 @@ import android.widget.ImageView;
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.gson.Gson;
 
@@ -64,6 +62,7 @@ public class DestinationsFragment extends Fragment implements ListAdapter.ItemLi
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         final View rootView = inflater.inflate(R.layout.fragment_destinations, container, false);
+
         // Bind the views
         ButterKnife.bind(this, rootView);
         mApiRequest = new ApiRequest(getContext());
@@ -80,6 +79,7 @@ public class DestinationsFragment extends Fragment implements ListAdapter.ItemLi
 
         //Register MainActivity as an OnSharedPreferenceChangedListener to receive a callback when a SharedPreference has changed.
         PreferenceManager.getDefaultSharedPreferences(getContext()).registerOnSharedPreferenceChangeListener(this);
+
         getActivity().getSupportLoaderManager().initLoader(DATA_LOADER_ID, null, this);
         mInterstitialAd =  new InterstitialAd(getContext());
         mInterstitialAd.setAdUnitId(getString(R.string.interstitial_ad_unit_id));
@@ -92,12 +92,6 @@ public class DestinationsFragment extends Fragment implements ListAdapter.ItemLi
         super.onResume();
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
         Timber.d("onResume");
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Timber.d("onPause");
     }
 
     @Override
@@ -161,7 +155,6 @@ public class DestinationsFragment extends Fragment implements ListAdapter.ItemLi
                 searchField.setQuery(input, false);
                 refresh();
                 Timber.d("Query: " + input);
-
                 return true;
             }
         });
@@ -251,7 +244,6 @@ public class DestinationsFragment extends Fragment implements ListAdapter.ItemLi
     public Loader onCreateLoader(int id, @Nullable Bundle args) {
         switch (id) {
             case DATA_LOADER_ID:
-
                 Uri uri = CacheEntry.CONTENT_URI;
                 String sortOrder = CacheEntry.ID + " ASC";
                 String selection = CacheEntry.COLUMN_URL + " = ?";
@@ -274,12 +266,10 @@ public class DestinationsFragment extends Fragment implements ListAdapter.ItemLi
             if(mCursor.getCount() == 0){
                 catchingData(mQuery);
                 Timber.d("Downloading data");
-                return;
             }else{
                 mEmptyView.setVisibility(View.GONE);
             }
         adapter.swapCursor(mCursor);
-        //mList.smoothScrollToPosition(0);
         Timber.d("Number of Items: " + mCursor.getCount());
         Timber.d("Load finished");
     }
