@@ -51,6 +51,5 @@ public class WeatherContract {
         public static final String COLUMN_DESCRIPTION = "description";
         //Type: TEXT
         public static final String COLUMN_FLAG = "flag";
-
     }
 }

@@ -2,10 +2,8 @@ package io.github.giusan82.easytrip.ui;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.preference.EditTextPreference;
 import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
@@ -15,7 +13,6 @@ import android.support.v7.preference.SwitchPreferenceCompat;
 import android.view.MenuItem;
 
 import io.github.giusan82.easytrip.R;
-
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -77,10 +74,6 @@ public class SettingsActivity extends AppCompatActivity {
                     listPreference.setSummary(listPreference.getEntries()[prefIndex]);
                 }
             }
-//            if(preference instanceof EditTextPreference){
-//                EditTextPreference editTextPreference = (EditTextPreference) preference;
-//                editTextPreference.setSummary(value);
-//            }
         }
 
         //Called when a shared preference is changed.

@@ -1,12 +1,9 @@
 package io.github.giusan82.easytrip.NetUtilities;
 
 import android.app.ProgressDialog;
-import android.content.AsyncTaskLoader;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.support.v7.preference.PreferenceManager;
 import android.widget.Toast;
 
@@ -17,14 +14,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.gson.Gson;
-import com.neovisionaries.i18n.CountryCode;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import io.github.giusan82.easytrip.R;
-import io.github.giusan82.easytrip.data.WeatherData;
 import timber.log.Timber;
 
 /**
@@ -37,7 +31,6 @@ import timber.log.Timber;
 public class ApiRequest {
 
     private static final String LOG_TAG = ApiRequest.class.getSimpleName();
-    private static final int DELAY_MILLIS = 3000;
     //Places
     private static final String BASE_DESTINATION_URL = "https://www.triposo.com/api/20180627/location.json";
     private static final String BASE_PLACES_URL = "https://www.triposo.com/api/20180627/poi.json";
@@ -124,7 +117,7 @@ public class ApiRequest {
         return buildUrl(builtUri, query);
     }
 
-    public URL getPlacesUrl(String query, String location_id){
+    public URL getPlacesUrl(String query, String location_id) {
         String orderBy = sharedPrefs.getString(mContext.getString(R.string.pref_orderBy_key), mContext.getString(R.string.pref_orderBy_default));
         Uri.Builder builtUri;
         builtUri = Uri.parse(BASE_PLACES_URL).buildUpon();
@@ -133,7 +126,7 @@ public class ApiRequest {
         return buildUrl(builtUri, query);
     }
 
-    public URL getUrlByLocation(String latitude, String longitude){
+    public URL getUrlByLocation(String latitude, String longitude) {
         Uri.Builder builtUri;
         builtUri = Uri.parse(BASE_PLACES_URL).buildUpon();
         builtUri.encodedQuery(PARAM_ANNOTATE + "=" + PARAM_DISTANCE + ":" + latitude + "," + longitude + "&" + PARAM_DISTANCE + "=<" + 5000 + "&" + PARAM_ORDER_BY + "=" + "-(" + PARAM_SCORE + "**3/" + PARAM_DISTANCE + ")");
@@ -142,10 +135,10 @@ public class ApiRequest {
         return buildUrl(builtUri, null);
     }
 
-    private URL buildUrl(Uri.Builder builtUri, String query){
+    private URL buildUrl(Uri.Builder builtUri, String query) {
         String count = sharedPrefs.getString(mContext.getString(R.string.pref_count_key), mContext.getString(R.string.pref_count_default));
         if (query != null) {
-            if (!query.isEmpty()){
+            if (!query.isEmpty()) {
                 builtUri.encodedQuery(PARAM_ANNOTATE + "=" + PARAM_TRIGRAM + ":" + query + "&trigram=>=1")
                         .appendQueryParameter(PARAM_ORDER_BY, "-" + PARAM_TRIGRAM);
             }
@@ -165,7 +158,7 @@ public class ApiRequest {
         return url;
     }
 
-    public URL getWeatherUrl(String latitude, String longitude){
+    public URL getWeatherUrl(String latitude, String longitude) {
         Uri.Builder builtUri;
         builtUri = Uri.parse(BASE_WEATHER_URL).buildUpon();
         builtUri.appendQueryParameter(PARAM_LATITUDE, latitude);

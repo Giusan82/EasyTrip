@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -91,7 +90,6 @@ public class CurrentLocationActivity extends AppCompatActivity implements Google
     private GeoDataClient mGeoDataClient;
     private FusedLocationProviderClient mLocationClient;
     private GoogleMap mMap;
-    private boolean mLocationPermissionGranted;
     private Location mLastKnownLocation;
     private TabsAdapter mTabsAdapter;
     private ArrayList<PlacesData.Results> mPlaces;
@@ -138,7 +136,7 @@ public class CurrentLocationActivity extends AppCompatActivity implements Google
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         mWindow = this.getWindow();
-        if(Build.VERSION.SDK_INT >= 21){
+        if (Build.VERSION.SDK_INT >= 21) {
             mWindow.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
         }
         mApiRequest = new ApiRequest(this);
@@ -152,71 +150,63 @@ public class CurrentLocationActivity extends AppCompatActivity implements Google
 
         // Construct a GeoDataClient.
         mGeoDataClient = Places.getGeoDataClient(this, null);
-
-
         // Construct a PlaceDetectionClient.
         mPlaceDetectionClient = Places.getPlaceDetectionClient(this, null);
-
         //FusedLocationApi is now deprecated, so I obtained the location using FusedLocationProviderClient - source: https://stackoverflow.com/a/46482065
         mLocationClient = LocationServices.getFusedLocationProviderClient(this);
-
         // Build the map.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
         mPlaces = new ArrayList<>();
         // Create an adapter that knows which fragment should be shown on each page
         mTabsAdapter = new TabsAdapter(this, getSupportFragmentManager(), PlacesData.ACTION_KEY_LOCATION);
         // Set the adapter onto the view pager
         mViewPager.setAdapter(mTabsAdapter);
         mViewPager.setPageMargin(10);
-
         mTabLayout.setupWithViewPager(mViewPager);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mTabLayout.setElevation(3);
         }
-        if(savedInstanceState == null){
+        if (savedInstanceState == null) {
             isFirst = true;
-        }else{
+        } else {
             mPlaces = (ArrayList<PlacesData.Results>) Parcels.unwrap(savedInstanceState.getParcelable(PlacesData.BUNDLE_KEY_PLACES_LIST));
             mTabsAdapter.setChangingList(mPlaces);
             isExpanded = savedInstanceState.getBoolean(BUNDLE_EXPANSION_KEY);
             isEmpty = savedInstanceState.getBoolean(BUNDLE_EMPTY_VIEW_KEY);
         }
-        mSlide =  new Slide();
+        mSlide = new Slide();
         mConstrainSet = new ConstraintSet();
-        if (!isExpanded){
+        if (!isExpanded) {
             actionExpanding();
-        }else {
+        } else {
             actionCollapsing();
         }
-        if (isEmpty){
+        if (isEmpty) {
             mEmptyView.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             mEmptyView.setVisibility(View.GONE);
         }
         mExpander.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!isExpanded){
+                if (!isExpanded) {
                     actionCollapsing();
                     isExpanded = true;
-                }else {
+                } else {
                     actionExpanding();
                     isExpanded = false;
                 }
             }
         });
-
         mIntentFilter = new IntentFilter();
         mIntentFilter.addAction(UpdateWeatherService.ACTION_UPDATE_FINISHED);
-
-            getSupportLoaderManager().initLoader(DATA_LOADER_ID, null, this);
+        getSupportLoaderManager().initLoader(DATA_LOADER_ID, null, this);
     }
 
-    private void actionExpanding(){
-        Timber.d("is Expanded? " +isExpanded);
+    private void actionExpanding() {
+        Timber.d("is Expanded? " + isExpanded);
         mExpander.setImageResource(R.drawable.ic_expand_less_24dp);
         mExpander.setContentDescription(getString(R.string.collapse_content));
 
@@ -225,7 +215,6 @@ public class CurrentLocationActivity extends AppCompatActivity implements Google
         mMapView.setVisibility(View.VISIBLE);
 
         TransitionManager.beginDelayedTransition(mViewPager);
-
         // source: https://stackoverflow.com/a/45264822
         mConstrainSet.clone(mContent);
         mConstrainSet.clear(mViewPager.getId(), ConstraintSet.TOP);
@@ -233,11 +222,10 @@ public class CurrentLocationActivity extends AppCompatActivity implements Google
         mConstrainSet.applyTo(mContent);
     }
 
-    private void actionCollapsing(){
-        Timber.d("is Expanded? " +isExpanded);
+    private void actionCollapsing() {
+        Timber.d("is Expanded? " + isExpanded);
         mExpander.setImageResource(R.drawable.ic_expand_more_24dp);
         mExpander.setContentDescription(getString(R.string.expand_content));
-
         mSlide.setSlideEdge(Gravity.TOP);
         TransitionManager.beginDelayedTransition((ViewGroup) mMapView, mSlide);
         mMapView.setVisibility(View.GONE);
@@ -247,6 +235,7 @@ public class CurrentLocationActivity extends AppCompatActivity implements Google
         mConstrainSet.connect(mViewPager.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 72);
         mConstrainSet.applyTo(mContent);
     }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -263,27 +252,26 @@ public class CurrentLocationActivity extends AppCompatActivity implements Google
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if (UpdateWeatherService.ACTION_UPDATE_FINISHED.equals(action)){
-                //refresh();
+            if (UpdateWeatherService.ACTION_UPDATE_FINISHED.equals(action)) {
+                refresh();
             }
         }
     };
-    private void refresh(){
+
+    private void refresh() {
         Timber.d("Refreshing data");
         getSupportLoaderManager().restartLoader(DATA_LOADER_ID, null, this);
     }
 
-
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         Timber.d("Google API connection successful");
-        if(isFirst){
+        if (isFirst) {
             getLocation();
         }
-
     }
 
-    private void getLocation(){
+    private void getLocation() {
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             Snackbar.make(mContent, getString(R.string.need_location_permission_message), Snackbar.LENGTH_LONG).show();
@@ -291,7 +279,7 @@ public class CurrentLocationActivity extends AppCompatActivity implements Google
             mLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
                 @Override
                 public void onSuccess(Location location) {
-                    if(location != null){
+                    if (location != null) {
                         mLatitude = String.valueOf(location.getLatitude());
                         mLongitude = String.valueOf(location.getLongitude());
                         Timber.d("Google Client: " + " Longitude: " + mLongitude + " | Latitude: " + mLatitude);
@@ -301,12 +289,11 @@ public class CurrentLocationActivity extends AppCompatActivity implements Google
                         WeatherData.setLatitude(getApplicationContext(), mLatitude);
                         WeatherData.setLongitude(getApplicationContext(), mLongitude);
 
-                    }else{
+                    } else {
                         Timber.d("No GPS data");
                     }
                 }
             });
-
         }
     }
 
@@ -320,7 +307,6 @@ public class CurrentLocationActivity extends AppCompatActivity implements Google
         Timber.d("Google API connection failed");
     }
 
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -328,8 +314,8 @@ public class CurrentLocationActivity extends AppCompatActivity implements Google
             Timber.d("Map is null");
             return;
         }
-        try{
-            mMap.setPadding(0,0,0,50);
+        try {
+            mMap.setPadding(0, 0, 0, 50);
             mMap.setMyLocationEnabled(true);
             mMap.getUiSettings().setMyLocationButtonEnabled(true);
             mMap.getUiSettings().setCompassEnabled(true);
@@ -355,21 +341,18 @@ public class CurrentLocationActivity extends AppCompatActivity implements Google
                     return false;
                 }
             });
-            if(mPlaces != null){
+            if (mPlaces != null) {
                 for (int i = 0; i < mPlaces.size(); i++) {
                     double latitude = Double.parseDouble(mPlaces.get(i).getCoordinates().getLatitude());
                     double longitude = Double.parseDouble(mPlaces.get(i).getCoordinates().getLogintude());
                     mMap.addMarker(new MarkerOptions().title(mPlaces.get(i).getName()).position(new LatLng(latitude, longitude)).zIndex(i));
                 }
             }
-
-        }catch (SecurityException e){
+        } catch (SecurityException e) {
             Timber.e(e.getMessage());
         }
-
         getOnMapLocation();
     }
-
 
     /**
      * Gets the current location of the device, and positions the map's camera.
@@ -393,7 +376,7 @@ public class CurrentLocationActivity extends AppCompatActivity implements Google
                     if (task.isSuccessful()) {
                         // Set the map's camera position to the current location of the device.
                         mLastKnownLocation = task.getResult();
-                        if(mLastKnownLocation != null){
+                        if (mLastKnownLocation != null) {
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                     new LatLng(mLastKnownLocation.getLatitude(),
                                             mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
@@ -408,14 +391,12 @@ public class CurrentLocationActivity extends AppCompatActivity implements Google
                     }
                 }
             });
-
-        } catch (SecurityException e)  {
+        } catch (SecurityException e) {
             Log.e("Exception: %s", e.getMessage());
         }
     }
 
-    private void catchingData(String latitude, String longitude){
-
+    private void catchingData(String latitude, String longitude) {
         final String url = mApiRequest.getUrlByLocation(latitude, longitude).toString();
         Timber.d("url: " + url);
         mApiRequest.get(url, true, new ApiRequest.Callback() {
@@ -431,10 +412,10 @@ public class CurrentLocationActivity extends AppCompatActivity implements Google
                     double longitude = Double.parseDouble(results[i].getCoordinates().getLogintude());
                     mMap.addMarker(new MarkerOptions().title(results[i].getName()).position(new LatLng(latitude, longitude)).zIndex(i));
                 }
-                if (mPlaces.size() == 0){
+                if (mPlaces.size() == 0) {
                     mEmptyView.setVisibility(View.VISIBLE);
                     isEmpty = true;
-                }else {
+                } else {
                     mEmptyView.setVisibility(View.GONE);
                     isEmpty = false;
                 }
@@ -445,7 +426,7 @@ public class CurrentLocationActivity extends AppCompatActivity implements Google
         });
     }
 
-    private void catchingWeatherData(String latitude, String longitude){
+    private void catchingWeatherData(String latitude, String longitude) {
         Intent intent = new Intent(this, InstantWeatherService.class);
         intent.setAction(InstantWeatherService.ACTION_GET_DATA);
         intent.putExtra(WeatherData.EXTRA_WEATHERI_LATITUDE, latitude);
@@ -453,6 +434,7 @@ public class CurrentLocationActivity extends AppCompatActivity implements Google
         startService(intent);
         Timber.d("Downloading weather data");
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         //getMenuInflater().inflate(R.menu.main, menu);
@@ -477,7 +459,6 @@ public class CurrentLocationActivity extends AppCompatActivity implements Google
             NavUtils.navigateUpFromSameTask(this);
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -517,28 +498,27 @@ public class CurrentLocationActivity extends AppCompatActivity implements Google
         }
     }
 
-        @Override
-        public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
-
-            if(cursor.getCount() == 0){
-                catchingWeatherData(mLatitude, mLongitude);
-                return;
-            }
-            if(cursor.moveToFirst()){
-                String temperature = cursor.getString(cursor.getColumnIndex(WeatherEntry.COLUMN_TEMPERATURE));
-                String image = "@drawable/" + cursor.getString(cursor.getColumnIndex(WeatherEntry.COLUMN_ICON));
-                int imageId = getResources().getIdentifier(image, null, getPackageName());
-                mTemperature.setText(temperature);
-                mWeatherIcon.setImageResource(imageId);
-                String state =  cursor.getString(cursor.getColumnIndex(WeatherEntry.COLUMN_DESCRIPTION));
-                mWeatherIcon.setContentDescription(state);
-                Timber.d("ID: " + cursor.getString(cursor.getColumnIndex(WeatherEntry._ID)));
-                Timber.d("Weather updated");
-            }
+    @Override
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
+        if (cursor.getCount() == 0) {
+            catchingWeatherData(mLatitude, mLongitude);
+            return;
         }
-
-        @Override
-        public void onLoaderReset(@NonNull Loader<Cursor> loader) {
-            Timber.d("Loader reset");
+        if (cursor.moveToFirst()) {
+            String temperature = cursor.getString(cursor.getColumnIndex(WeatherEntry.COLUMN_TEMPERATURE));
+            String image = "@drawable/" + cursor.getString(cursor.getColumnIndex(WeatherEntry.COLUMN_ICON));
+            int imageId = getResources().getIdentifier(image, null, getPackageName());
+            mTemperature.setText(temperature);
+            mWeatherIcon.setImageResource(imageId);
+            String state = cursor.getString(cursor.getColumnIndex(WeatherEntry.COLUMN_DESCRIPTION));
+            mWeatherIcon.setContentDescription(state);
+            Timber.d("ID: " + cursor.getString(cursor.getColumnIndex(WeatherEntry._ID)));
+            Timber.d("Weather updated");
         }
+    }
+
+    @Override
+    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
+        Timber.d("Loader reset");
+    }
 }

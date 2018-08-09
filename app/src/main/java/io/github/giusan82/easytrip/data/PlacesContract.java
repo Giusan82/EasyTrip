@@ -4,7 +4,6 @@ import android.content.ContentResolver;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-
 public class PlacesContract {
 
     //To prevent someone from accidentally instantiating the contract class
@@ -55,6 +54,5 @@ public class PlacesContract {
         public static final String COLUMN_SCORE = "score";
         //Type: TEXT
         public static final String COLUMN_INTRO = "intro";
-
     }
 }

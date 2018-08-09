@@ -4,7 +4,6 @@ import android.app.IntentService;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -13,23 +12,25 @@ import android.support.annotation.Nullable;
 import com.google.gson.Gson;
 import com.neovisionaries.i18n.CountryCode;
 
-import java.net.URI;
-
 import io.github.giusan82.easytrip.NetUtilities.ApiRequest;
 import io.github.giusan82.easytrip.data.WeatherContract.WeatherEntry;
 import io.github.giusan82.easytrip.data.WeatherData;
 import io.github.giusan82.easytrip.ui.WeatherWidget;
 import timber.log.Timber;
 
-public class InstantWeatherService extends IntentService{
+public class InstantWeatherService extends IntentService {
     public static final String ACTION_GET_DATA = "getting_data";
     private String mLatitude;
     private String mLongitude;
-    public InstantWeatherService(){super("InstantWeatherService");}
+
+    public InstantWeatherService() {
+        super("InstantWeatherService");
+    }
+
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
-        if(intent != null){
-            if(intent.getAction().equals(ACTION_GET_DATA)){
+        if (intent != null) {
+            if (intent.getAction().equals(ACTION_GET_DATA)) {
                 mLatitude = intent.getStringExtra(WeatherData.EXTRA_WEATHERI_LATITUDE);
                 mLongitude = intent.getStringExtra(WeatherData.EXTRA_WEATHERI_LONGITUDE);
                 catchingWeatherData(mLatitude, mLongitude);
@@ -37,8 +38,8 @@ public class InstantWeatherService extends IntentService{
         }
     }
 
-    private void catchingWeatherData(String latitude, String longitude){
-        if(latitude != null && longitude != null){
+    private void catchingWeatherData(String latitude, String longitude) {
+        if (latitude != null && longitude != null) {
             final ApiRequest apiRequest = new ApiRequest(this);
             final String url = apiRequest.getWeatherUrl(latitude, longitude).toString();
             apiRequest.get(url, false, new ApiRequest.Callback() {
@@ -52,7 +53,6 @@ public class InstantWeatherService extends IntentService{
                     Timber.d("Location: " + data[0].getCityName() + ", " + country.getName());
 
                     int rows = 0;
-
                     long creation_time = System.currentTimeMillis();
                     ContentValues cv = new ContentValues();
                     cv.put(WeatherEntry.COLUMN_CREATION_DATE, creation_time);
@@ -64,23 +64,22 @@ public class InstantWeatherService extends IntentService{
                     cv.put(WeatherEntry.COLUMN_DESCRIPTION, data[0].getWeather().getDescription());
                     cv.put(WeatherEntry.COLUMN_FLAG, WeatherData.KEY_CURRENT_FLAG);
 
-                    try{
+                    try {
                         // Otherwise this is an EXISTING item, this update the item with content URI
-                        if(!WeatherData.getUri(getApplicationContext()).isEmpty()){
+                        if (!WeatherData.getUri(getApplicationContext()).isEmpty()) {
                             int rowsAffected = getContentResolver().update(Uri.parse(WeatherData.getUri(getApplicationContext())), cv, null, null);
                             // Show a toast message depending on whether or not the update was successful.
                             if (rowsAffected == 0) {
                                 Timber.d("Update Failed");
                             }
-                        }else{
+                        } else {
                             Uri newUri = getContentResolver().insert(WeatherEntry.CONTENT_URI, cv);
                             WeatherData.setUri(getApplicationContext(), newUri.toString());
-                            if(newUri != null){
+                            if (newUri != null) {
                                 rows++;
                             }
                         }
-
-                    }catch (IllegalArgumentException e){
+                    } catch (IllegalArgumentException e) {
                         Timber.e(e.getClass().getCanonicalName() + ": " + e.getMessage());
                         e.printStackTrace();
                     }
@@ -91,7 +90,8 @@ public class InstantWeatherService extends IntentService{
         }
 
     }
-    private void getData(){
+
+    private void getData() {
         Uri uri = WeatherEntry.CONTENT_URI;
         String sortOrder = WeatherEntry.ID + " ASC";
         String selection = WeatherEntry.COLUMN_FLAG + " = ?";
@@ -108,9 +108,8 @@ public class InstantWeatherService extends IntentService{
         String city = "";
         String country_code = "";
         String icon = "";
-        if(cursor != null){
-
-            if(cursor.getCount() > 0){
+        if (cursor != null) {
+            if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
                 //get data here
                 description = cursor.getString(cursor.getColumnIndex(WeatherEntry.COLUMN_DESCRIPTION));
@@ -121,14 +120,13 @@ public class InstantWeatherService extends IntentService{
                 cursor.close();
             }
         }
-
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, WeatherWidget.class));
         //update all widgets
         WeatherWidget.onUpdateWidget(this, appWidgetManager, appWidgetIds, description, temperature, city, country_code, icon);
 
         String weather_id = WeatherData.getUri(this);
-        if(!weather_id.isEmpty()){
+        if (!weather_id.isEmpty()) {
             Tasks.sheduleUpdateWeather(this, true);
         }
     }

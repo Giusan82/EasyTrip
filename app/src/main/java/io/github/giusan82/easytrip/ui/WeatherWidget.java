@@ -26,33 +26,31 @@ public class WeatherWidget extends AppWidgetProvider {
         Intent open = new Intent(context, SplashActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, open, 0);
         views.setOnClickPendingIntent(R.id.widget_container, pendingIntent);
-        if(description != null){
+        if (description != null) {
             views.setTextViewText(R.id.tv_widget_weather_state, description);
         }
-        if(temperature != null){
+        if (temperature != null) {
             views.setTextViewText(R.id.tv_widget_temperature, temperature);
             views.setViewVisibility(R.id.tv_widget_temperature, View.VISIBLE);
             views.setViewVisibility(R.id.tv_widget_unit, View.VISIBLE);
         }
-        if(city != null){
+        if (city != null) {
             views.setTextViewText(R.id.tv_widget_location, city);
-            if(country_code != null){
+            if (country_code != null) {
                 CountryCode countryCode = CountryCode.getByCode(country_code);
-                if(countryCode != null){
+                if (countryCode != null) {
                     String location = city + ", " + countryCode.getName();
                     views.setTextViewText(R.id.tv_widget_location, location);
                 }
             }
             views.setViewVisibility(R.id.tv_widget_location, View.VISIBLE);
         }
-
-        if(icon != null){
+        if (icon != null) {
             String uriIcons = "@drawable/" + icon;
             views.setImageViewResource(R.id.iv_widget_weather_icon, context.getResources().getIdentifier(uriIcons, null, context.getPackageName()));
             views.setViewVisibility(R.id.iv_widget_weather_icon, View.VISIBLE);
+            views.setContentDescription(R.id.iv_widget_weather_icon, description);
         }
-
-
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
@@ -63,10 +61,9 @@ public class WeatherWidget extends AppWidgetProvider {
         Intent intent = new Intent(context, InstantWeatherService.class);
         intent.setAction(InstantWeatherService.ACTION_GET_DATA);
         context.startService(intent);
-
     }
 
-    public static void onUpdateWidget(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds, String description, String temperature, String city, String country_code, String icon){
+    public static void onUpdateWidget(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds, String description, String temperature, String city, String country_code, String icon) {
         for (int appWidgetId : appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId, description, temperature, city, country_code, icon);
         }

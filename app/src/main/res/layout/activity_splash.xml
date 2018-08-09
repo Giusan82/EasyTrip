@@ -4,27 +4,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.SplashActivity"
-    android:background="@color/splash_background">
+    android:background="@color/splash_background"
+    tools:context=".ui.SplashActivity">
+
     <ImageView
         android:id="@+id/iv_splash_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/image_splashscreen"
-        android:scaleType="centerCrop"/>
+        android:scaleType="centerCrop"
+        android:src="@drawable/image_splashscreen" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#70000000"/>
+        android:background="#70000000" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="EasyTrip"
-        android:textSize="@dimen/text_h1"
         android:fontFamily="serif"
+        android:text="EasyTrip"
         android:textColor="@android:color/white"
+        android:textSize="@dimen/text_h1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -52,5 +53,4 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         tools:text="- Unknown" />
-
 </android.support.constraint.ConstraintLayout>

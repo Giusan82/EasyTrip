@@ -10,9 +10,8 @@
 
     <fragment
         android:id="@+id/destination_fragment"
+        android:name="io.github.giusan82.easytrip.ui.DestinationsFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:name="io.github.giusan82.easytrip.ui.DestinationsFragment"
-        tools:context="io.github.giusan82.easytrip.ui.MainActivity"/>
-
+        tools:context="io.github.giusan82.easytrip.ui.MainActivity" />
 </android.support.constraint.ConstraintLayout>

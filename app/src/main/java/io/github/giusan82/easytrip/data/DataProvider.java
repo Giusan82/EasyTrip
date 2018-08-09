@@ -8,8 +8,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
-import com.google.android.gms.location.places.Place;
-
 import io.github.giusan82.easytrip.data.CacheContract.CacheEntry;
 import io.github.giusan82.easytrip.data.PlacesContract.PlacesEntry;
 import io.github.giusan82.easytrip.data.WeatherContract.WeatherEntry;

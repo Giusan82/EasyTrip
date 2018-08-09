@@ -1,18 +1,12 @@
 package io.github.giusan82.easytrip.data;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-
 import com.google.gson.annotations.SerializedName;
 
 import org.parceler.Parcel;
 
-import java.io.Serializable;
-
 import timber.log.Timber;
 
-public class PlacesData{
+public class PlacesData {
     private static final String SPLITTER_PARENT_ID = "wv__";
 
     private static final String KEY_RESULTS = "results";
@@ -69,7 +63,7 @@ public class PlacesData{
     }
 
     @Parcel
-    public static class Results{
+    public static class Results {
         @SerializedName(KEY_ID)
         public String mID;
         @SerializedName(KEY_NAME)
@@ -89,7 +83,8 @@ public class PlacesData{
         @SerializedName(KEY_INTRO)
         public String mIntro;
 
-        public Results(){}
+        public Results() {
+        }
 
         public String getID() {
             return mID;
@@ -107,15 +102,21 @@ public class PlacesData{
             return mImages;
         }
 
-        public String getCountryId(){return mCountryId;}
+        public String getCountryId() {
+            return mCountryId;
+        }
 
-        public String getLocationId(){return mLocationId;}
+        public String getLocationId() {
+            return mLocationId;
+        }
 
-        public String getIntro(){return mIntro;}
+        public String getIntro() {
+            return mIntro;
+        }
 
-        public String getCountryName(){
+        public String getCountryName() {
             String name = "";
-            if(mCountryId != null){
+            if (mCountryId != null) {
                 name = mCountryId.replace("_", " ");
             }
             return name;
@@ -125,20 +126,24 @@ public class PlacesData{
             return mCoordinates;
         }
 
-        public String getmParentId(){return mParentId;}
-        public String getParentName(){
+        public String getmParentId() {
+            return mParentId;
+        }
+
+        public String getParentName() {
             String name = "";
 
-            if(mID != null){
+            if (mID != null) {
                 String[] parts = mID.split(SPLITTER_PARENT_ID);
                 Timber.d(mID);
-                if(mID.contains(SPLITTER_PARENT_ID)){
-                   name = parts[1].replace("_", " ");
-                   Timber.d(name);
+                if (mID.contains(SPLITTER_PARENT_ID)) {
+                    name = parts[1].replace("_", " ");
+                    Timber.d(name);
                 }
             }
             return name;
         }
+
         @Parcel
         public static class Images {
             @SerializedName(KEY_SIZES)
@@ -147,6 +152,7 @@ public class PlacesData{
             public Sizes getSizes() {
                 return mSizes;
             }
+
             @Parcel
             public static class Sizes {
                 @SerializedName(KEY_THUMBNAIL)
@@ -167,6 +173,7 @@ public class PlacesData{
                 public Original getOriginal() {
                     return mOriginal;
                 }
+
                 @Parcel
                 public static class Thumbnail {
                     @SerializedName(KEY_IMAGE_URL)
@@ -176,6 +183,7 @@ public class PlacesData{
                         return mImageUrl;
                     }
                 }
+
                 @Parcel
                 public static class Medium {
                     @SerializedName(KEY_IMAGE_URL)
@@ -185,6 +193,7 @@ public class PlacesData{
                         return mImageUrl;
                     }
                 }
+
                 @Parcel
                 public static class Original {
                     @SerializedName(KEY_IMAGE_URL)
@@ -196,15 +205,24 @@ public class PlacesData{
                 }
             }
         }
+
         @Parcel
-        public static class Coordinates{
+        public static class Coordinates {
             @SerializedName(KEY_LATITUDE)
             public String mLatitude;
             @SerializedName(KEY_LONGITUDE)
             public String mLogintude;
-            public Coordinates(){}
-            public String getLatitude(){return mLatitude;}
-            public String getLogintude(){return mLogintude;}
+
+            public Coordinates() {
+            }
+
+            public String getLatitude() {
+                return mLatitude;
+            }
+
+            public String getLogintude() {
+                return mLogintude;
+            }
         }
     }
 }

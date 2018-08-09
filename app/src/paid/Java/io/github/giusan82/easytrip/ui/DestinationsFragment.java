@@ -1,6 +1,5 @@
 package io.github.giusan82.easytrip.ui;
 
-import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -151,6 +150,7 @@ public class DestinationsFragment extends Fragment implements ListAdapter.ItemLi
             }
         });
     }
+
     private void catchingData(final String query) {
         mApiRequest.get(mApiRequest.getDestinationUrl(query).toString(), true, new ApiRequest.Callback() {
             @Override
@@ -159,31 +159,31 @@ public class DestinationsFragment extends Fragment implements ListAdapter.ItemLi
                 PlacesData placesData = gson.fromJson(result, PlacesData.class);
                 PlacesData.Results[] results = placesData.getResults();
                 int rows = 0;
-                    for (int i = 0; i < results.length; i++) {
-                            try{
-                                long creation_time = System.currentTimeMillis();
-                                ContentValues cv = new ContentValues();
-                                cv.put(CacheEntry.COLUMN_CREATION_DATE, creation_time);
-                                cv.put(CacheEntry.COLUMN_URL, mApiRequest.getDestinationUrl(query).toString());
-                                cv.put(CacheEntry.COLUMN_PLACE_ID, results[i].getID());
-                                cv.put(CacheEntry.COLUMN_PLACE_NAME, results[i].getName());
-                                PlacesData.Results.Images[] images = results[i].getImages();
-                                cv.put(CacheEntry.COLUMN_IMAGE_URL, images[0].getSizes().getMedium().getImageUrl());
-                                cv.put(CacheEntry.COLUMN_PLACE_COUNTRY_NAME, results[i].getCountryName());
-                                cv.put(CacheEntry.COLUMN_PLACE_PARENT_NAME, results[i].getParentName());
-                                cv.put(CacheEntry.COLUMN_SCORE, results[i].getScore());
-                                Uri newUri = getContext().getContentResolver().insert(CacheEntry.CONTENT_URI, cv);
-                                if(newUri != null){
-                                    rows++;
-                                }
-                            }catch (IllegalArgumentException e){
-                                Timber.e(e.getClass().getCanonicalName() + ": " + e.getMessage());
-                                e.printStackTrace();
-                            }
+                for (int i = 0; i < results.length; i++) {
+                    try {
+                        long creation_time = System.currentTimeMillis();
+                        ContentValues cv = new ContentValues();
+                        cv.put(CacheEntry.COLUMN_CREATION_DATE, creation_time);
+                        cv.put(CacheEntry.COLUMN_URL, mApiRequest.getDestinationUrl(query).toString());
+                        cv.put(CacheEntry.COLUMN_PLACE_ID, results[i].getID());
+                        cv.put(CacheEntry.COLUMN_PLACE_NAME, results[i].getName());
+                        PlacesData.Results.Images[] images = results[i].getImages();
+                        cv.put(CacheEntry.COLUMN_IMAGE_URL, images[0].getSizes().getMedium().getImageUrl());
+                        cv.put(CacheEntry.COLUMN_PLACE_COUNTRY_NAME, results[i].getCountryName());
+                        cv.put(CacheEntry.COLUMN_PLACE_PARENT_NAME, results[i].getParentName());
+                        cv.put(CacheEntry.COLUMN_SCORE, results[i].getScore());
+                        Uri newUri = getContext().getContentResolver().insert(CacheEntry.CONTENT_URI, cv);
+                        if (newUri != null) {
+                            rows++;
+                        }
+                    } catch (IllegalArgumentException e) {
+                        Timber.e(e.getClass().getCanonicalName() + ": " + e.getMessage());
+                        e.printStackTrace();
+                    }
                 }
-                if(results.length == 0){
+                if (results.length == 0) {
                     mEmptyView.setVisibility(View.VISIBLE);
-                }else{
+                } else {
                     mEmptyView.setVisibility(View.GONE);
                 }
                 adapter.swapCursor(mCursor);
@@ -192,14 +192,14 @@ public class DestinationsFragment extends Fragment implements ListAdapter.ItemLi
         });
     }
 
-    private void refresh(){
+    private void refresh() {
         Timber.d("Refreshing data");
         getActivity().getSupportLoaderManager().restartLoader(DATA_LOADER_ID, null, this);
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.contains(getString(R.string.pref_count_key)) || key.contains(getString(R.string.pref_orderBy_key))){
+        if (key.contains(getString(R.string.pref_count_key)) || key.contains(getString(R.string.pref_orderBy_key))) {
             refresh();
         }
     }
@@ -217,7 +217,6 @@ public class DestinationsFragment extends Fragment implements ListAdapter.ItemLi
     public Loader onCreateLoader(int id, @Nullable Bundle args) {
         switch (id) {
             case DATA_LOADER_ID:
-
                 Uri uri = CacheEntry.CONTENT_URI;
                 String sortOrder = CacheEntry.ID + " ASC";
                 String selection = CacheEntry.COLUMN_URL + " = ?";
@@ -236,13 +235,13 @@ public class DestinationsFragment extends Fragment implements ListAdapter.ItemLi
 
     @Override
     public void onLoadFinished(@NonNull Loader loader, Object data) {
-            mCursor = (Cursor) data;
-            if(mCursor.getCount() == 0){
-                catchingData(mQuery);
-                Timber.d("Downloading data");
-            }else{
-                mEmptyView.setVisibility(View.GONE);
-            }
+        mCursor = (Cursor) data;
+        if (mCursor.getCount() == 0) {
+            catchingData(mQuery);
+            Timber.d("Downloading data");
+        } else {
+            mEmptyView.setVisibility(View.GONE);
+        }
         adapter.swapCursor(mCursor);
         Timber.d("Number of Items: " + mCursor.getCount());
         Timber.d("Load finished");

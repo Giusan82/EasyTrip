@@ -25,10 +25,6 @@ import timber.log.Timber;
 
 public class PlacesFragment extends Fragment implements ListAdapter.ItemListOnClickHandler {
 
-    private String mLocationId;
-    private String mParentName;
-    private String mCountryName;
-    private ListAdapter mAdapter;
     private String mName;
 
     @BindView(R.id.intro)

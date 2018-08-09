@@ -42,10 +42,12 @@ public class TabsAdapter extends FragmentStatePagerAdapter {
         mAction = action;
         mFragmentManager = fm;
     }
+
     @Override
-    public int getItemPosition(Object object){
+    public int getItemPosition(Object object) {
         return PagerAdapter.POSITION_NONE;
     }
+
     //this set the fragment for each position
     @Override
     public Fragment getItem(int position) {
@@ -71,7 +73,7 @@ public class TabsAdapter extends FragmentStatePagerAdapter {
         } else if (mAction == PlacesData.ACTION_KEY_LOCATION) {
             PlacesData.Results current = mItems.get(position);
             arguments.putString(PlacesData.BUNDLE_KEY_PLACE_NAME, current.getName());
-            if(current.getImages().length >0){
+            if (current.getImages().length > 0) {
                 arguments.putString(PlacesData.BUNDLE_KEY_PLACE_IMAGE_URL, current.getImages()[0].getSizes().getMedium().getImageUrl());
             }
             arguments.putString(PlacesData.BUNDLE_KEY_INTRO, current.getIntro());
@@ -117,8 +119,6 @@ public class TabsAdapter extends FragmentStatePagerAdapter {
         }
     }
 
-
-
     public Cursor swapCursor(Cursor newCursor) {
         if (newCursor == mCursor) {
             return null;
@@ -132,7 +132,7 @@ public class TabsAdapter extends FragmentStatePagerAdapter {
 
     public ArrayList<PlacesData.Results> setChangingList(ArrayList<PlacesData.Results> newItems) {
         this.mItems = newItems;
-        if(mItems != null){
+        if (mItems != null) {
             Timber.d("Notify data changed");
             this.notifyDataSetChanged();
         }

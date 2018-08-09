@@ -8,7 +8,6 @@ import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.graphics.Palette;
-import android.util.Log;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -51,7 +50,7 @@ public class SplashActivity extends AppCompatActivity {
         }
         final Intent intent = new Intent(this, MainActivity.class);
 
-        if(Build.VERSION.SDK_INT >= 21){
+        if (Build.VERSION.SDK_INT >= 21) {
             Palette.from(((BitmapDrawable) mSplashBackground.getDrawable()).getBitmap()).generate(new Palette.PaletteAsyncListener() {
                 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
                 @Override
@@ -62,7 +61,7 @@ public class SplashActivity extends AppCompatActivity {
         }
 
         String weather_uri = WeatherData.getUri(this);
-        if(!weather_uri.isEmpty()){
+        if (!weather_uri.isEmpty()) {
             Timber.d("JobDispatcher starting...");
             Tasks.sheduleUpdateWeather(this, true);
         }

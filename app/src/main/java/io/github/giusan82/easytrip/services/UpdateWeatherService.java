@@ -3,11 +3,7 @@ package io.github.giusan82.easytrip.services;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.net.Uri;
-import android.os.AsyncTask;
-import android.support.v4.content.LocalBroadcastManager;
-import android.widget.Toast;
 
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
@@ -15,13 +11,11 @@ import com.google.gson.Gson;
 import com.neovisionaries.i18n.CountryCode;
 
 import io.github.giusan82.easytrip.NetUtilities.ApiRequest;
-import io.github.giusan82.easytrip.R;
-import io.github.giusan82.easytrip.data.PlacesData;
 import io.github.giusan82.easytrip.data.WeatherData;
 import io.github.giusan82.easytrip.data.WeatherContract.WeatherEntry;
 import timber.log.Timber;
 
-public class UpdateWeatherService extends JobService{
+public class UpdateWeatherService extends JobService {
     private Context mContext = this;
     public static final String ACTION_UPDATE_FINISHED = "update_finished";
 
@@ -32,7 +26,7 @@ public class UpdateWeatherService extends JobService{
         String longitude = WeatherData.getLongitude(mContext);
 
         Timber.d("ID: " + weather_uri);
-        if(!weather_uri.isEmpty()){
+        if (!weather_uri.isEmpty()) {
             ApiRequest apiRequest = new ApiRequest(mContext);
             final String url = apiRequest.getWeatherUrl(latitude, longitude).toString();
             apiRequest.get(url, false, new ApiRequest.Callback() {
@@ -45,7 +39,6 @@ public class UpdateWeatherService extends JobService{
                     CountryCode country = CountryCode.getByCode(data[0].getCountryCode());
                     Timber.d("Location: " + data[0].getCityName() + ", " + country.getName());
 
-
                     long creation_time = System.currentTimeMillis();
                     ContentValues cv = new ContentValues();
                     cv.put(WeatherEntry.COLUMN_CREATION_DATE, creation_time);
@@ -55,7 +48,7 @@ public class UpdateWeatherService extends JobService{
                     cv.put(WeatherEntry.COLUMN_ICON, data[0].getWeather().getIcon());
                     cv.put(WeatherEntry.COLUMN_TEMPERATURE, data[0].getCelsius());
                     cv.put(WeatherEntry.COLUMN_DESCRIPTION, data[0].getWeather().getDescription());
-                    try{
+                    try {
                         // Otherwise this is an EXISTING item, this update the item with content URI
                         int rowsAffected = getContentResolver().update(Uri.parse(weather_uri), cv, null, null);
                         // Show a toast message depending on whether or not the update was successful.
@@ -66,15 +59,13 @@ public class UpdateWeatherService extends JobService{
                             sendBroadcast(intent);
                             Timber.d("Update successful, row affected: " + rowsAffected);
                         }
-                    }catch (IllegalArgumentException e){
+                    } catch (IllegalArgumentException e) {
                         Timber.e(e.getClass().getCanonicalName() + ": " + e.getMessage());
                         e.printStackTrace();
                     }
-
                 }
             });
         }
-
         return false;
     }
 

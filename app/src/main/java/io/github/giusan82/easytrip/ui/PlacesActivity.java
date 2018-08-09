@@ -45,7 +45,7 @@ import io.github.giusan82.easytrip.data.PlacesContract.PlacesEntry;
 import timber.log.Timber;
 
 
-public class PlacesActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
+public class PlacesActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final int DATA_LOADER_ID = 4;
     private String mLocationId;
     private String mParentName;
@@ -86,28 +86,26 @@ public class PlacesActivity extends AppCompatActivity implements LoaderManager.L
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-
-
         Intent intent = getIntent();
 
-        if (intent.hasExtra(PlacesData.EXTRA_NAME)){
+        if (intent.hasExtra(PlacesData.EXTRA_NAME)) {
             mTitle = intent.getStringExtra(PlacesData.EXTRA_NAME);
             setTitle(mTitle);
         }
-        if(intent.hasExtra(PlacesData.EXTRA_POSITION)){
+        if (intent.hasExtra(PlacesData.EXTRA_POSITION)) {
             Timber.d("Position: " + intent.getIntExtra(PlacesData.EXTRA_POSITION, 0));
         }
-        if(intent.hasExtra(PlacesData.EXTRA_LOCATION_ID)){
+        if (intent.hasExtra(PlacesData.EXTRA_LOCATION_ID)) {
             mLocationId = intent.getStringExtra(PlacesData.EXTRA_LOCATION_ID);
             Timber.d("Position: " + mLocationId);
         }
-        if(intent.hasExtra(PlacesData.EXTRA_PARENT_NAME)){
+        if (intent.hasExtra(PlacesData.EXTRA_PARENT_NAME)) {
             mParentName = intent.getStringExtra(PlacesData.EXTRA_PARENT_NAME);
         }
-        if (intent.hasExtra(PlacesData.EXTRA_COUNTRY_NAME)){
+        if (intent.hasExtra(PlacesData.EXTRA_COUNTRY_NAME)) {
             mCountryName = intent.getStringExtra(PlacesData.EXTRA_COUNTRY_NAME);
         }
-        if (intent.hasExtra(PlacesData.EXTRA_IMAGE_URL)){
+        if (intent.hasExtra(PlacesData.EXTRA_IMAGE_URL)) {
             mImageUrl = intent.getStringExtra(PlacesData.EXTRA_IMAGE_URL);
             Glide.with(this).load(mImageUrl).asBitmap().dontAnimate().dontTransform().into(new SimpleTarget<Bitmap>() {
                 @Override
@@ -119,23 +117,22 @@ public class PlacesActivity extends AppCompatActivity implements LoaderManager.L
 
                             @Override
                             public void onGenerated(Palette palette) {
-                                if(palette != null){
+                                if (palette != null) {
                                     int darkMutedColor;
-                                    if(palette.getDarkMutedSwatch() != null){
+                                    if (palette.getDarkMutedSwatch() != null) {
                                         darkMutedColor = palette.getDarkMutedSwatch().getRgb();
-                                    }else{
+                                    } else {
                                         Timber.d("Dark Muted Color not found");
                                         darkMutedColor = Color.BLACK;
                                     }
                                     int lightVibrantColor;
-                                    if (palette.getLightVibrantSwatch() != null){
+                                    if (palette.getLightVibrantSwatch() != null) {
                                         lightVibrantColor = palette.getLightVibrantSwatch().getRgb();
-                                    }else{
+                                    } else {
                                         Timber.d("Light Vibrant Color not found");
                                         lightVibrantColor = Color.BLACK;
                                     }
-
-                                    if(Build.VERSION.SDK_INT >= 21){
+                                    if (Build.VERSION.SDK_INT >= 21) {
                                         mWindow.setStatusBarColor(darkMutedColor);
                                     }
                                     mCollapsingToolbarLayout.setContentScrimColor(darkMutedColor);
@@ -147,20 +144,17 @@ public class PlacesActivity extends AppCompatActivity implements LoaderManager.L
                                 }
                             }
                         });
-                    }else{
+                    } else {
                         Timber.d("No Resource ready");
                     }
-
                 }
             });
-
         }
 
         // Create an adapter that knows which fragment should be shown on each page
         mTabsAdapter = new TabsAdapter(this, getSupportFragmentManager(), PlacesData.ACTION_KEY_PLACES);
         // Set the adapter onto the view pager
         mViewPager.setAdapter(mTabsAdapter);
-
         mTabLayout.setupWithViewPager(mViewPager);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mTabLayout.setElevation(3);
@@ -180,7 +174,6 @@ public class PlacesActivity extends AppCompatActivity implements LoaderManager.L
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             Intent settingsIntent = new Intent(this, SettingsActivity.class);
@@ -192,7 +185,6 @@ public class PlacesActivity extends AppCompatActivity implements LoaderManager.L
             NavUtils.navigateUpFromSameTask(this);
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -220,11 +212,11 @@ public class PlacesActivity extends AppCompatActivity implements LoaderManager.L
     @Override
     public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
 
-        if(cursor.getCount() == 0){
+        if (cursor.getCount() == 0) {
             catchingData(null);
             Timber.d("Downloading data");
             return;
-        }else{
+        } else {
             mEmptyView.setVisibility(View.GONE);
         }
         mTabsAdapter.swapCursor(cursor);
@@ -237,8 +229,7 @@ public class PlacesActivity extends AppCompatActivity implements LoaderManager.L
         mTabsAdapter.swapCursor(null);
     }
 
-    private void catchingData(String query){
-
+    private void catchingData(String query) {
         final String url = mApiRequest.getPlacesUrl(query, mLocationId).toString();
         Timber.d("url: " + url);
         mApiRequest.get(url, true, new ApiRequest.Callback() {
@@ -248,10 +239,8 @@ public class PlacesActivity extends AppCompatActivity implements LoaderManager.L
                 PlacesData placesData = gson.fromJson(result, PlacesData.class);
                 PlacesData.Results[] results = placesData.getResults();
                 int rows = 0;
-
                 for (int i = 0; i < results.length; i++) {
-
-                    try{
+                    try {
                         long creation_time = System.currentTimeMillis();
                         ContentValues cv = new ContentValues();
                         cv.put(PlacesEntry.COLUMN_CREATION_DATE, creation_time);
@@ -259,7 +248,7 @@ public class PlacesActivity extends AppCompatActivity implements LoaderManager.L
                         cv.put(PlacesEntry.COLUMN_LOCATION_ID, results[i].getID());
                         cv.put(PlacesEntry.COLUMN_PLACE_NAME, results[i].getName());
                         PlacesData.Results.Images[] images = results[i].getImages();
-                        if(images.length != 0){
+                        if (images.length != 0) {
                             cv.put(PlacesEntry.COLUMN_IMAGE_URL, images[0].getSizes().getMedium().getImageUrl());
                         }
                         cv.put(PlacesEntry.COLUMN_PLACE_COUNTRY_NAME, mCountryName);
@@ -267,18 +256,17 @@ public class PlacesActivity extends AppCompatActivity implements LoaderManager.L
                         cv.put(PlacesEntry.COLUMN_SCORE, results[i].getScore());
                         cv.put(PlacesEntry.COLUMN_INTRO, results[i].getIntro());
                         Uri newUri = getContentResolver().insert(PlacesEntry.CONTENT_URI, cv);
-                        if(newUri != null){
+                        if (newUri != null) {
                             rows++;
                         }
-                    }catch (IllegalArgumentException e){
+                    } catch (IllegalArgumentException e) {
                         Timber.e(e.getClass().getCanonicalName() + ": " + e.getMessage());
                         e.printStackTrace();
                     }
-
                 }
-                if(results.length == 0){
+                if (results.length == 0) {
                     mEmptyView.setVisibility(View.VISIBLE);
-                }else{
+                } else {
                     mEmptyView.setVisibility(View.GONE);
                 }
                 mTabsAdapter.swapCursor(mCursor);

@@ -22,7 +22,6 @@ import io.github.giusan82.easytrip.ui.MainActivity;
 
 import io.github.giusan82.easytrip.data.CacheContract.CacheEntry;
 
-
 public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListViewHolder> {
     private static final String COMMA_SEPARATOR = ", ";
     private static final String DOT_SEPARATOR = ". ";
@@ -63,29 +62,28 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListViewHolder
         String country_name = mCursor.getString(mCursor.getColumnIndex(CacheEntry.COLUMN_PLACE_COUNTRY_NAME));
         String parent_name = mCursor.getString(mCursor.getColumnIndex(CacheEntry.COLUMN_PLACE_PARENT_NAME));
         builder.append(place_name);
-        if(!country_name.equals("")){
-            if(!parent_name.equals("")) {
+        if (!country_name.equals("")) {
+            if (!parent_name.equals("")) {
                 builder.append(COMMA_SEPARATOR);
                 builder.append(parent_name);
                 builder.append(COMMA_SEPARATOR);
                 builder.append(country_name);
-
-            }else{
+            } else {
                 builder.append(COMMA_SEPARATOR);
                 builder.append(country_name);
             }
         }
         String name = builder.toString();
         holder.tv_name.setText(name);
-        CardView.LayoutParams viewParams= new CardView.LayoutParams(CardView.LayoutParams.MATCH_PARENT, getHeightListImage((MainActivity)mContext));
+        CardView.LayoutParams viewParams = new CardView.LayoutParams(CardView.LayoutParams.MATCH_PARENT, getHeightListImage((MainActivity) mContext));
         int viewMargins = (int) mContext.getResources().getDimension(R.dimen.card_margin);
         viewParams.setMargins(viewMargins, viewMargins, viewMargins, viewMargins);
         holder.list_container.setLayoutParams(viewParams);
         String image_url = mCursor.getString(mCursor.getColumnIndex(CacheEntry.COLUMN_IMAGE_URL));
-        if(image_url != null){
-            if(image_url.isEmpty()){
+        if (image_url != null) {
+            if (image_url.isEmpty()) {
                 holder.iv_image_list.setImageResource(R.drawable.placeholder);
-            }else{
+            } else {
                 Glide.with(mContext).load(image_url).listener(new RequestListener<String, GlideDrawable>() {
                     @Override
                     public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
@@ -102,7 +100,6 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListViewHolder
         }
         holder.iv_image_list.setContentDescription(mContext.getString(R.string.destination_images_content_description, name));
         holder.setIsRecyclable(false);
-
     }
 
     @Override
@@ -112,11 +109,11 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListViewHolder
     }
 
     public Cursor swapCursor(Cursor newCursor) {
-        if(newCursor == mCursor){
+        if (newCursor == mCursor) {
             return null;
         }
         this.mCursor = newCursor;
-        if(newCursor != null){
+        if (newCursor != null) {
             this.notifyDataSetChanged();
         }
         return mCursor;
@@ -133,14 +130,13 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListViewHolder
             this.iv_image_list = itemView.findViewById(R.id.iv_image_list);
             this.list_container = itemView.findViewById(R.id.list_container);
             this.list_container.setOnClickListener(mViewListener);
-
         }
+
         private View.OnClickListener mViewListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 int position = getAdapterPosition();
                 mCallback.onClickList(mCursor, position);
-
             }
         };
     }
@@ -161,7 +157,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListViewHolder
         activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
 
         int width = displayMetrics.widthPixels;
-        int height = (width/numberOfColumns(activity)) *2/3;
+        int height = (width / numberOfColumns(activity)) * 2 / 3;
         return height;
     }
 }

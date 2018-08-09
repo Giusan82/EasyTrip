@@ -30,10 +30,14 @@ public class WeatherData {
     @SerializedName(KEY_DATA)
     public Data[] mData;
 
-    public WeatherData(){}
-    public Data[] getData(){return mData;}
+    public WeatherData() {
+    }
 
-    public class Data{
+    public Data[] getData() {
+        return mData;
+    }
+
+    public class Data {
         @SerializedName(KEY_CITY_NAME)
         public String mCityName;
         @SerializedName(KEY_WEATHER)
@@ -43,8 +47,9 @@ public class WeatherData {
         @SerializedName(KEY_COUNTRY_CODE)
         public String mCountryCode;
 
-
-        public String getCityName(){return mCityName;}
+        public String getCityName() {
+            return mCityName;
+        }
 
         public String getCountryCode() {
             return mCountryCode;
@@ -57,13 +62,14 @@ public class WeatherData {
         public double getTemp() {
             return mTemp;
         }
-        public double getCelsius(){
+
+        public double getCelsius() {
             double celsius = mTemp - 273.15;
             return celsius;
         }
     }
 
-    public class Weather{
+    public class Weather {
         @SerializedName(KEY_ICON)
         public String mIcon;
         @SerializedName(KEY_DESCRIPTION)

@@ -15,6 +15,7 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_api_key" />
+
         <activity
             android:name=".ui.SplashActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -48,10 +49,12 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="io.github.giusan82.easytrip.ui.MainActivity" />
         </activity>
+
         <provider
             android:name=".data.DataProvider"
             android:authorities="@string/content_authority"
             android:exported="false" />
+
         <service
             android:name=".services.UpdateWeatherService"
             android:exported="false">

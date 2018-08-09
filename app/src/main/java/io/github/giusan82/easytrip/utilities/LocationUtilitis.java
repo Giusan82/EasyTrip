@@ -9,7 +9,6 @@ import android.support.v4.app.ActivityCompat;
 import android.view.View;
 
 import io.github.giusan82.easytrip.R;
-import io.github.giusan82.easytrip.ui.CurrentLocationActivity;
 import timber.log.Timber;
 
 import static android.content.Context.LOCATION_SERVICE;
@@ -18,14 +17,16 @@ public class LocationUtilitis {
     private static final int PERMISSIONS_REQUEST_FINE_LOCATION = 111;
     private Context mContext;
     private View mContent;
-    public LocationUtilitis(Context context, View content){
+
+    public LocationUtilitis(Context context, View content) {
         mContext = context;
         mContent = content;
     }
+
     public boolean enableAccessFineLocation() {
         boolean isEnable = false;
         LocationManager mLocationManager = (LocationManager) mContext.getSystemService(LOCATION_SERVICE);
-        if (mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+        if (mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             //this verify if the location permission is granted
             if (ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_FINE_LOCATION)
                     != PackageManager.PERMISSION_GRANTED) {
@@ -39,12 +40,11 @@ public class LocationUtilitis {
                 isEnable = true;
                 //mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, mLocationListener);
             }
-        }else{
+        } else {
             isEnable = false;
             Snackbar.make(mContent, mContext.getString(R.string.need_gps_message), Snackbar.LENGTH_LONG).show();
             Timber.d("GPS status is off");
         }
-
         return isEnable;
     }
 }

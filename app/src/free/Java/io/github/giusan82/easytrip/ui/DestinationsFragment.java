@@ -56,7 +56,6 @@ public class DestinationsFragment extends Fragment implements ListAdapter.ItemLi
     @BindView(R.id.empty_view)
     View mEmptyView;
 
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -81,7 +80,7 @@ public class DestinationsFragment extends Fragment implements ListAdapter.ItemLi
         PreferenceManager.getDefaultSharedPreferences(getContext()).registerOnSharedPreferenceChangeListener(this);
 
         getActivity().getSupportLoaderManager().initLoader(DATA_LOADER_ID, null, this);
-        mInterstitialAd =  new InterstitialAd(getContext());
+        mInterstitialAd = new InterstitialAd(getContext());
         mInterstitialAd.setAdUnitId(getString(R.string.interstitial_ad_unit_id));
 
         return rootView;
@@ -99,10 +98,10 @@ public class DestinationsFragment extends Fragment implements ListAdapter.ItemLi
 
         if (mInterstitialAd.isLoaded()) {
             mInterstitialAd.show();
-        }else{
+        } else {
             Timber.d("The interstitial wasn't loaded yet.");
         }
-        mInterstitialAd.setAdListener(new AdListener(){
+        mInterstitialAd.setAdListener(new AdListener() {
             @Override
             public void onAdClosed() {
                 super.onAdClosed();
@@ -137,7 +136,6 @@ public class DestinationsFragment extends Fragment implements ListAdapter.ItemLi
         //this add the searchView to actionBar
         searchField = (SearchView) search.getActionView();
         //set the hint text on searchView
-        //searchField.setQueryHint(getString(R.string.searchHint));
         //this expand the searchView without click on it
         searchField.setIconified(false);
         searchField.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -178,6 +176,7 @@ public class DestinationsFragment extends Fragment implements ListAdapter.ItemLi
             }
         });
     }
+
     private void catchingData(final String query) {
         mApiRequest.get(mApiRequest.getDestinationUrl(query).toString(), true, new ApiRequest.Callback() {
             @Override
@@ -186,31 +185,31 @@ public class DestinationsFragment extends Fragment implements ListAdapter.ItemLi
                 PlacesData placesData = gson.fromJson(result, PlacesData.class);
                 PlacesData.Results[] results = placesData.getResults();
                 int rows = 0;
-                    for (int i = 0; i < results.length; i++) {
-                            try{
-                                long creation_time = System.currentTimeMillis();
-                                ContentValues cv = new ContentValues();
-                                cv.put(CacheEntry.COLUMN_CREATION_DATE, creation_time);
-                                cv.put(CacheEntry.COLUMN_URL, mApiRequest.getDestinationUrl(query).toString());
-                                cv.put(CacheEntry.COLUMN_PLACE_ID, results[i].getID());
-                                cv.put(CacheEntry.COLUMN_PLACE_NAME, results[i].getName());
-                                PlacesData.Results.Images[] images = results[i].getImages();
-                                cv.put(CacheEntry.COLUMN_IMAGE_URL, images[0].getSizes().getMedium().getImageUrl());
-                                cv.put(CacheEntry.COLUMN_PLACE_COUNTRY_NAME, results[i].getCountryName());
-                                cv.put(CacheEntry.COLUMN_PLACE_PARENT_NAME, results[i].getParentName());
-                                cv.put(CacheEntry.COLUMN_SCORE, results[i].getScore());
-                                Uri newUri = getContext().getContentResolver().insert(CacheEntry.CONTENT_URI, cv);
-                                if(newUri != null){
-                                    rows++;
-                                }
-                            }catch (IllegalArgumentException e){
-                                Timber.e(e.getClass().getCanonicalName() + ": " + e.getMessage());
-                                e.printStackTrace();
-                            }
+                for (int i = 0; i < results.length; i++) {
+                    try {
+                        long creation_time = System.currentTimeMillis();
+                        ContentValues cv = new ContentValues();
+                        cv.put(CacheEntry.COLUMN_CREATION_DATE, creation_time);
+                        cv.put(CacheEntry.COLUMN_URL, mApiRequest.getDestinationUrl(query).toString());
+                        cv.put(CacheEntry.COLUMN_PLACE_ID, results[i].getID());
+                        cv.put(CacheEntry.COLUMN_PLACE_NAME, results[i].getName());
+                        PlacesData.Results.Images[] images = results[i].getImages();
+                        cv.put(CacheEntry.COLUMN_IMAGE_URL, images[0].getSizes().getMedium().getImageUrl());
+                        cv.put(CacheEntry.COLUMN_PLACE_COUNTRY_NAME, results[i].getCountryName());
+                        cv.put(CacheEntry.COLUMN_PLACE_PARENT_NAME, results[i].getParentName());
+                        cv.put(CacheEntry.COLUMN_SCORE, results[i].getScore());
+                        Uri newUri = getContext().getContentResolver().insert(CacheEntry.CONTENT_URI, cv);
+                        if (newUri != null) {
+                            rows++;
+                        }
+                    } catch (IllegalArgumentException e) {
+                        Timber.e(e.getClass().getCanonicalName() + ": " + e.getMessage());
+                        e.printStackTrace();
+                    }
                 }
-                if(results.length == 0){
+                if (results.length == 0) {
                     mEmptyView.setVisibility(View.VISIBLE);
-                }else{
+                } else {
                     mEmptyView.setVisibility(View.GONE);
                 }
                 adapter.swapCursor(mCursor);
@@ -219,14 +218,14 @@ public class DestinationsFragment extends Fragment implements ListAdapter.ItemLi
         });
     }
 
-    private void refresh(){
+    private void refresh() {
         Timber.d("Refreshing data");
         getActivity().getSupportLoaderManager().restartLoader(DATA_LOADER_ID, null, this);
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.contains(getString(R.string.pref_count_key)) || key.contains(getString(R.string.pref_orderBy_key))){
+        if (key.contains(getString(R.string.pref_count_key)) || key.contains(getString(R.string.pref_orderBy_key))) {
             refresh();
         }
     }
@@ -262,13 +261,13 @@ public class DestinationsFragment extends Fragment implements ListAdapter.ItemLi
 
     @Override
     public void onLoadFinished(@NonNull Loader loader, Object data) {
-            mCursor = (Cursor) data;
-            if(mCursor.getCount() == 0){
-                catchingData(mQuery);
-                Timber.d("Downloading data");
-            }else{
-                mEmptyView.setVisibility(View.GONE);
-            }
+        mCursor = (Cursor) data;
+        if (mCursor.getCount() == 0) {
+            catchingData(mQuery);
+            Timber.d("Downloading data");
+        } else {
+            mEmptyView.setVisibility(View.GONE);
+        }
         adapter.swapCursor(mCursor);
         Timber.d("Number of Items: " + mCursor.getCount());
         Timber.d("Load finished");
