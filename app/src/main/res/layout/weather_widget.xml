@@ -68,6 +68,7 @@
         android:layout_marginEnd="@dimen/activity_horizontal_margin_list"
         android:layout_marginStart="@dimen/activity_horizontal_margin_list"
         android:layout_marginTop="@dimen/activity_vertical_margin_list"
+        android:contentDescription="@null"
         android:visibility="gone"
         tools:src="@drawable/a01d" />
 </RelativeLayout>

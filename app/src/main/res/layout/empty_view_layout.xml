@@ -16,6 +16,7 @@
         android:layout_height="@dimen/empty_image_size"
         android:layout_marginBottom="@dimen/activity_vertical_margin_list"
         android:adjustViewBounds="true"
+        android:contentDescription="@string/empty_view_image_content_description"
         android:scaleType="fitCenter"
         android:src="@drawable/compass" />
 

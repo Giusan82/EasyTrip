@@ -24,6 +24,7 @@
                 android:layout_height="@dimen/icons_size"
                 android:layout_marginStart="@dimen/double_horizontal_margin"
                 android:adjustViewBounds="true"
+                android:contentDescription="@null"
                 android:scaleType="fitCenter" />
 
             <TextView

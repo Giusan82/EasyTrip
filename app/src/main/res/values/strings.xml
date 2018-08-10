@@ -15,6 +15,9 @@
     <string name="destination_images_content_description">Representative image of %1$s</string>
     <string name="destination_intro_content_description">Intro of %1$s</string>
     <string name="current_location_map_content_description">Google Map with the nearby point of interest</string>
+    <string name="destination_header_content_description">An illustration with common travel destination in europe</string>
+    <string name="empty_view_image_content_description">Compass</string>
+    <string name="splash_background_content_description">A dream travel</string>
     <string name="expand_content">Expand content</string>
     <string name="collapse_content">Collapse content</string>
 
