@@ -7,7 +7,16 @@
 ## Project Overview
 This Capstone, Stage 2 project consists to demonstrate the skills learned in the Nanodegree journey, and apply them to creating a unique app previously designed in the [Capstone Stage 1](Capstone_Stage1.pdf). It give moreover, the experience needed to own the full development cycle of an app.
 
+The Api Keys are not included. To include them, it is necessary to add the following strings:
 
+```xml
+<resources>
+    <string name="google_api_key">your_key</string>
+    <string name="triposo_token_key">your_key</string>
+    <string name="triposo_account_id">your_id</string>
+    <string name="weatherbit_api_key">your_key</string>
+</resources>
+```
 
 
 # Rubric
@@ -59,3 +68,10 @@ Data Persistence
 * If Content provider is used, the app uses a Loader to move its data to its views.
 * If Room is used then LiveData and ViewModel are used when required and no unnecessary calls to the database are made.
 
+
+# Screenshots
+<div align="center">
+<img src="screenshots/screenshot-2018-08-11_19.36.35.513.png" height="450" style="max-width:100%;">
+<img src="screenshots/screenshot-2018-08-11_19.37.01.986.png" height="450" style="max-width:100%;">
+<img src="screenshots/screenshot-2018-08-11_19.38.07.770.png" height="450" style="max-width:100%;">
+</div>
