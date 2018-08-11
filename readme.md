@@ -5,22 +5,8 @@
 <i>Skill level:</i> <b>Advanced</b>
 
 ## Project Overview
-This project consists to make an app using this [sample mock](https://d17h27t6h515a5.cloudfront.net/topher/2017/March/58dee986_bakingapp-mocks/bakingapp-mocks.pdf), taking it from a functional state to a production-ready state. 
-This will involve finding and handling error cases, adding accessibility features, allowing for localization, adding a widget, and adding a library.
+This Capstone, Stage 2 project consists to demonstrate the skills learned in the Nanodegree journey, and apply them to creating a unique app previously designed in the [Capstone Stage 1](Capstone_Stage1.pdf). It give moreover, the experience needed to own the full development cycle of an app.
 
-## App Description
-App that will allow a user to select a recipe and see video-guided steps for how to complete it.
-[The recipe listing is located here.](https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/baking.json)
-
-
-
-## What I Learned
-
-* Use MediaPlayer/Exoplayer to display videos.
-* Handle error cases in Android.
-* Add a widget to your app experience.
-* Leverage a third-party library in your app.
-* Use Fragments to create a responsive design that works on phones and tablets.
 
 
 
@@ -28,17 +14,48 @@ App that will allow a user to select a recipe and see video-guided steps for how
 
 ### Required Components
 
-* App is written solely in the Java Programming Language
-* App utilizes stable release versions of all libraries, Gradle, and Android Studio.
-* App should display recipes from provided network resource. 
-* App should allow navigation between individual recipes and recipe steps.
-* App uses RecyclerView and can handle recipe steps that include videos or images.
+Common Project Requirements
 * App conforms to common standards found in the [Android Nanodegree General Project Guidelines.](http://udacity.github.io/android-nanodegree-guidelines/core.html) 
-* Application uses Master Detail Flow to display recipe steps and navigation between them.
-* Application uses Exoplayer to display videos.
-* Application properly initializes and releases video assets when appropriate.
-* Application should properly retrieve media assets from the provided network links. It should properly handle network requests.
-* Application makes use of Espresso to test aspects of the UI.
-* Application sensibly utilizes a third-party library to enhance the app's features. That could be helper library to interface with ContentProviders if you choose to store the recipes, a UI binding library to avoid writing findViewById a bunch of times, or something similar.
-* Application has a companion homescreen widget.
-* Widget displays ingredient list for desired recipe.
+* App is written solely in the Java Programming Language.
+* App utilizes stable release versions of all libraries, Gradle, and Android Studio.
+
+Core Platform Development
+* App integrates a third-party library.
+* App validates all input from servers and users. If data does not exist or is in the wrong format, the app logs this fact and does not crash. 
+* App includes support for accessibility. That includes content descriptions, navigation using a D-pad, and, if applicable, non-audio versions of audio cues. 
+* App keeps all strings in a strings.xml file and enables RTL layout switching on all layouts.
+* App provides a widget to provide relevant information to the user on the home screen.
+
+Google Play Services
+* App integrates two or more Google services. Google service integrations can be a part of Google Play Services or Firebase.
+* Each service imported in the build.gradle is used in the app. 
+* If Location is used, the app customizes the user’s experience by using the device's location.
+* If Admob is used, the app displays test ads. If Admob was not used, student meets specifications.
+* If Analytics is used, the app creates only one analytics instance. If Analytics was not used, student meets specifications.
+* If Maps is used, the map provides relevant information to the user. If Maps was not used, student meets specifications.
+* If Identity is used, the user’s identity influences some portion of the app. If Identity was not used, student meets specifications.
+
+Material Design
+* App theme extends AppCompat.
+* App uses an app bar and associated toolbars.
+* App uses standard and simple transitions between activities.
+
+Building
+* App builds from a clean repository checkout with no additional configuration. 
+* App builds and deploys using the installRelease Gradle task.
+* App is equipped with a signing configuration, and the keystore and passwords are included in the repository. Keystore is referred to by a relative path.
+* All app dependencies are managed by Gradle.
+
+Data Persistence
+* App stores data locally either by implementing a ContentProvider OR using Firebase Realtime Database OR using Room. No third party frameworks nor Persistence Libraries may be used.
+* Must implement at least one of the three
+  * If it regularly pulls or sends data to/from a web service or API, app updates data in its cache at regular intervals using a SyncAdapter or JobDispacter.
+  
+  OR
+  * If it needs to pull or send data to/from a web service or API only once, or on a per request basis (such as a search application), app uses an IntentService to do so.
+  
+  OR
+  * It it performs short duration, on-demand requests(such as search), app uses an AsyncTask.  
+* If Content provider is used, the app uses a Loader to move its data to its views.
+* If Room is used then LiveData and ViewModel are used when required and no unnecessary calls to the database are made.
+
